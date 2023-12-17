@@ -10,5 +10,5 @@ while not number.isdigit():
     print("Bir Tam Sayi Girmeniz Gerekmekte")
     number = input("Bir Tam Sayi Giriniz: ")
 
-a = int()
+number = int()
 faktöriyel(a)
