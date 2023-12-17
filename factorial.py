@@ -1,4 +1,4 @@
-number = input("Bir Tam Sayi Giriniz")
+number = input("Bir Tam Sayi Giriniz: ")
 
 def faktöriyel(sayi):
     faktöriyel = 1
@@ -10,5 +10,5 @@ while not number.isdigit():
     print("Bir Tam Sayi Girmeniz Gerekmekte")
     number = input("Bir Tam Sayi Giriniz: ")
 
-number = int()
-faktöriyel(a)
+number = int(number)
+faktöriyel(number)
