@@ -12,8 +12,8 @@ def root():
         print("2.Kök = " , (-b - delta**0.5)/2*a )
 
 print("Lüften ax^2 + bx + c Şeklinde olan formülün a,b ve c değerlerini giriniz")
-a = int(input("a'yi giriniz: "))
-b = int(input("b'yi giriniz: "))
-c = int(input("c'yi giriniz: "))
+a = float(input("a'yi giriniz: "))
+b = float(input("b'yi giriniz: "))
+c = float(input("c'yi giriniz: "))
 
 root()
