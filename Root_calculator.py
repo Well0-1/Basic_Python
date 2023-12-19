@@ -16,4 +16,4 @@ a = int(input("a'yi giriniz: "))
 b = int(input("b'yi giriniz: "))
 c = int(input("c'yi giriniz: "))
 
-sonuc = root()
+root()
