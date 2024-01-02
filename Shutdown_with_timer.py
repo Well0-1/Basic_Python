@@ -8,8 +8,8 @@ sleep_time = int(input("Saniye Cinsinden Bilgisayar kaç saniye sonra kapanmasin
 for i in range(sleep_time) :
     timer = sleep_time - i 
     time.sleep(1)
-    if timer <= 30 :
-        print(timer)
+    if timer <= 60 :
+        print(f"\rBilgisayarınız {timer} saniye sonra kapanacaktır!",end="")
                 
 os.system("shutdown /s /t 1")
 
