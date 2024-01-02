@@ -29,7 +29,7 @@ sleep_time = int(sleep_time)
 for i in range(sleep_time) :
     timer = sleep_time - i 
     if timer <= 5 :
-        print(f"Bilgisayarınız {timer} dakika sonra kapanacaktır!")
+        print(f"\rBilgisayarınız {timer} dakika sonra kapanacaktır!",end="")
     time.sleep(60)
 
 print("Shutting Down...")
