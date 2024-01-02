@@ -47,7 +47,7 @@ end = time.time()
 
 print(f"Sayın {name} {surname} Tebrikler! Testi {int((end-start)/60)} dakikada ve başarıyla bitirdiniz. Biz Sizi Ararız.")
 
-#
+# OR # 
 
 import time
 
