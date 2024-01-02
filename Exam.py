@@ -46,3 +46,46 @@ for i in range(len(questions)) :
 end = time.time()
 
 print(f"Sayın {name} {surname} Tebrikler! Testi {int((end-start)/60)} dakikada ve başarıyla bitirdiniz. Biz Sizi Ararız.")
+
+#
+
+import time
+
+quest_answer = {
+    "Soru1":"Cevap1",
+    "Soru2":"Cevap2",
+    "Soru3":"Cevap3",
+    "Soru4":"Cevap4",
+    "Soru5":"Cevap5",
+}
+chances = 3
+
+name = input("İsminizi Giriniz: ")
+surname = input("Soyisminizi Giriniz: ")
+mail = input("Mail Adresinizi Giriniz: ")
+cv = input("CV'nizi Buraya Kopyalayabilirsiniz: ")
+social = input("Github,Linkedin, gibi sosyal medya hesaplarınızı kopyalayabilirsiniz: ")
+
+start_time = time.time()
+
+for key, value in quest_answer.items() :
+    while True :
+        question = input(f"{key}: ")
+        etime = time.time()
+        if question == value :
+            chances = 3
+            if etime - start_time > 300 :
+                print("Süreniz Dolmuştur!")
+                exit()
+            print("Tebrikler, Doğru Cevap!")
+            break
+        else :
+            chances -= 1 
+            print(f"Yanlış Cevap {chances} Hakkınız Kaldı!")
+            if chances == 0 :
+                print("Bu Soruya Toplamda 3 Kez Yanlış Cevap Verdiğiniz İçin Mülakatınız Başarısız Olarak Sonuçlanmıştır!")
+                exit()
+    
+end_time = time.time()
+
+print(f"Sayın {name} {surname} Tebrikler! Testi {int((end_time-start_time)/60)} dakikada ve başarıyla bitirdiniz. Biz Sizi Ararız.")
