@@ -14,7 +14,6 @@ def user_choice() :
         if trys == 0 :
             print("Too Many Failed Attempts, Shutting Down...")
             quit()
-            
     return u_choice
     
 def game() :
