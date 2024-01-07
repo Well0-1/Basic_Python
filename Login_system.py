@@ -9,10 +9,10 @@ def signup() :
     print("-------------------------------------------Kayıt Programı ----------------------------------------------------------")
     while True :
         new_user = input("Kullanıcı Adı: ")
-        #for i in accounts :
-        #    while new_user == i :
-        #            print("Girilen Kullanıcı Adı Halihazırda Kullanımdadır, Lütfen Farklı Bir Kullanıcı Adı Seçiniz!")
-        #            new_user = input("Kullanıcı Adı: ")
+        for i in accounts :
+            while new_user == i :
+                    print("Girilen Kullanıcı Adı Halihazırda Kullanımdadır, Lütfen Farklı Bir Kullanıcı Adı Seçiniz!")
+                    new_user = input("Kullanıcı Adı: ")
         new_pass = input("Şifre: ") 
         
         accounts.update({new_user:new_pass})
@@ -63,3 +63,9 @@ while True :
         changepass()
     elif login_result == "Signup" :
         signup()
+
+
+
+# add-list
+# import data from txt file 
+# change password 
