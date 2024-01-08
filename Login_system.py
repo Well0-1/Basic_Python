@@ -1,43 +1,56 @@
 import random
 
 accounts = {
-    "Admin": ["12345", "rayshoesmith70@mail.com"],
-    "User1": ["password", "user1@mail.com"],
-    "User2": ["manypass", "user2@mail.com"],
-    "User3": ["cantfindany", "user3@mail.com"],
+    "rayshoesmith70@mail.com": ["Admin", "12345"],
+    "user1@mail.com": ["User1", "password"],
+    "user2@mail.com": ["User2", "manypass"],
+    "user3@mail.com": ["User3", "cantfindany"],
 }
 
 
 def signup():
-    print("<-------------------------------------------Kayıt Programı ---------------------------------------------------------->")
-    
-    while True:
+    print("<-----------------------------------------Kayıt Programı----------------------------------------->")
+
+    mail = input("Mail Adresinizi Giriniz: ")
+    for i in accounts :
+        while mail == i :
+            pswchg = input("Girilen Mail Adresi Halihazırda Kayıtlıdır, Kayıt Olmaya Devam Etmek İçin 'E', Şifrenizi Unuttuysanız 'H', Programı Kapatmak İçin 'Q' Tuşlayınız: ").upper()
+            if pswchg == "E" :
+                mail = input("Mail Adresinizi Giriniz: ")
+            elif pswchg == "H":
+                return 'Change_Pass'
+            else:
+                return False
+    while "@" not in mail:
+        print("Geçerli Bir Mail Adresi Girmeniz Gerekmektedir!")
         mail = input("Mail Adresinizi Giriniz: ")
-        while "@" not in mail:
-            print("Geçerli Bir Mail Adresi Girmeniz Gerekmektedir!")
-            mail = input("Mail Adresinizi Giriniz: ")
 
-        new_user = input("Kullanıcı Adı: ")
-        for i in accounts:
-            while new_user == i:
-                print("Girilen Kullanıcı Adı Halihazırda Kullanımdadır, Lütfen Farklı Bir Kullanıcı Adı Seçiniz!")
-                new_user = input("Kullanıcı Adı: ")
+    new_user = input("Kullanıcı Adı: ")
+    for k, v in accounts.items():
+        while new_user == v[0] :
+            print("Girilen Kullanıcı Adı Halihazırda Kullanımdadır, Lütfen Farklı Bir Kullanıcı Adı Seçiniz!")
+            new_user = input("Kullanıcı Adı: ")
 
-        trys = 0
+    trys = 0
+    
+    new_pass = input("Şifre: ")
+    while len(new_pass) < 8 or len(new_pass) > 16 :
+        print("Oluşturacağınız Şifre En Az 8 En Fazla 16 Karakter Olmalıdır!")
+        new_pass = input("Şifre: ")
+    
+    v_new_pass = input("Şifrenizi Doğrulayın: ")
+    while new_pass != v_new_pass:
+        print("Şifreler Eşleşmiyor, Lütfen Doğru Girdiğinize Emin Olunuz!")
         new_pass = input("Şifre: ")
         v_new_pass = input("Şifrenizi Doğrulayın: ")
-        while new_pass != v_new_pass:
-            print("Şifreler Eşleşmiyor, Lütfen Doğru Girdiğinize Emin Olunuz!")
-            new_pass = input("Şifre: ")
-            v_new_pass = input("Şifrenizi Doğrulayın: ")
-            trys += 1
-            if trys == 3:
-                print("Çok Sayıda Geçersiz İşlem Yapıldı Program Kapatılıyor...")
-                exit()
+        trys += 1
+        if trys == 3:
+            print("Çok Sayıda Geçersiz İşlem Yapıldı Program Kapatılıyor...")
+            exit()
 
-        accounts.update({new_user: [new_pass, mail]})
-        print(f"Sayın Kullanıcı {new_user}, Kaydınız Başarıyla Gerçekleşmiştir!\nPrograma Yönlendiriliyorsunuz...")
-        return True
+    accounts.update({mail: [new_user, new_pass]})
+    print(f"Sayın Kullanıcı {new_user}, Kaydınız Başarıyla Gerçekleşmiştir!\nPrograma Yönlendiriliyorsunuz...")
+    return True
 
 
 def login():
@@ -48,24 +61,24 @@ def login():
         username = input("Kullanıcı Adı : ")
         password = input("Şifre : ")
 
-        for k, v in accounts.items():
-            if username == k and password == v[0]:
+        for v in accounts.values():
+            if username == v[0] and password == v[1]:
                 print("Giriş Başarılı!")
                 return True
-            elif username == k and password != v[0]:
+            elif username == v[0] and password != v[1]:
                 print("Hatalı Kullanıcı Adı Veya Şifre!")
                 wrong_pass += 1
                 if wrong_pass == 3:
                     ask_change = input("Şifrenizi Mi Unuttunuz? (E/H): ").upper()
                     if ask_change == "E":
                         return "Incorrect"
-            elif username not in accounts:
+            elif not any(username == v[0] for v in accounts.values()) :
                 print("Böyle Bir Kullanıcı Bulunmamaktadır!")
                 ask_signup = input("Kayıt Olmak İçin 'E' Tekrar Denemek İçin 'H' Tuşlayınız: ").upper()
                 if ask_signup == "E":
                     return "Signup"
                 elif ask_signup == "H":
-                    return "Trying"
+                    return "Try Again"
                 else:
                     return False
             else:
@@ -77,38 +90,66 @@ def login():
 
 
 def changepass():
-    print("<------Şifremi Unuttum------>")
+    print("<-----------Şifremi Unuttum----------->")
 
-    username = input("Kullanıcı Adınız: ") # Change that to mail 
-    if username in accounts:
+    mail = input("Mail Adresiniz: ") 
+    if mail in accounts:
+        username = accounts[mail][0]
         vcode = random.randint(100000, 999999)
         print(vcode)
-        verify = int(input(f"{accounts[username][1]} Mail Adresine Gelen 6 Haneli Doğrulama Kodunu Giriniz: "))
         
-        if verify == vcode:
-            changed_pass = input("Yeni Şifre: ")
-            v_changed_pass = input("Yeni Şifryi Doğrulayın: ")
-            while changed_pass != v_changed_pass:
+        trys = 0
+        while trys < 3 :
+            verify = int(input(f"{mail} Adresine Gelen 6 Haneli Doğrulama Kodunu Giriniz: "))
+            if verify == vcode:
                 changed_pass = input("Yeni Şifre: ")
                 v_changed_pass = input("Yeni Şifreyi Doğrulayın: ")
-            accounts.update({username: [changed_pass, accounts[username][1]]})
+                while changed_pass != v_changed_pass:
+                    changed_pass = input("Yeni Şifre: ")
+                    v_changed_pass = input("Yeni Şifreyi Doğrulayın: ")
+                accounts.update({mail:[username, changed_pass]})
+                print("Şifreniz Başarıyla Değiştirildi!\n")
+                break
+            else :
+                print("\nGirilen Kod Yanlış!\n")
+                trys += 1
+        if trys == 3 :
+            print("Çok Sayıda Yanlış Deneme Yapıldı Program Kapatılıyor!")
+            exit()
 
-    elif username not in accounts:
-        print("Böyle Bir Kullanıcı Adı Bulunmamaktadır!")
+    elif mail not in accounts:
+        print("Bu Mail Adresine Kayıtlı Bir Kullanıcı Bulunmamaktadır!")
+        ask_signup = input("Kayıt Olmak İster misiniz? (E/H): ").upper()
+        if ask_signup == "E":
+            return "Signup"
+        else:
+            return "Incorrect"
 
 
 while True:
     login_result = login()
     if login_result == True:
         exit()
+        
     elif login_result == False:
         print("Invalid Argument! Shutting Down...")
         exit()
+        
     elif login_result == "Incorrect":
-        changepass()
+        chgpass_result = changepass()
+        if chgpass_result == "Signup":
+            signup()
+        else :
+            continue
+               
     elif login_result == "Signup":
-        signup()
+        signup_result = signup()
+        if signup_result == "Change_Pass":
+            changepass()
+        elif signup_result == False :
+            exit()
+    else :
+        continue
 
 # add-list
 # import data from txt file
-# make mail:[username,password]
