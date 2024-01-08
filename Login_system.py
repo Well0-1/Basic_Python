@@ -1,4 +1,5 @@
 import random
+import qrcode # Works On Python 3.8.2
 
 accounts = {
     "rayshoesmith70@mail.com": ["Admin", "12345"],
@@ -26,10 +27,10 @@ def signup():
         mail = input("Mail Adresinizi Giriniz: ")
 
     new_user = input("Kullanıcı Adı: ")
-    for k, v in accounts.items():
-        while new_user == v[0] :
-            print("Girilen Kullanıcı Adı Halihazırda Kullanımdadır, Lütfen Farklı Bir Kullanıcı Adı Seçiniz!")
-            new_user = input("Kullanıcı Adı: ")
+
+    while any(new_user == v[0] for v in accounts.values()) :
+        print("Girilen Kullanıcı Adı Halihazırda Kullanımdadır, Lütfen Farklı Bir Kullanıcı Adı Seçiniz!")
+        new_user = input("Kullanıcı Adı: ")
 
     trys = 0
     
@@ -96,7 +97,8 @@ def changepass():
     if mail in accounts:
         username = accounts[mail][0]
         vcode = random.randint(100000, 999999)
-        print(vcode)
+        img = qrcode.make(vcode)              # Qr
+        img.show()                            # Qr
         
         trys = 0
         while trys < 3 :
@@ -153,3 +155,7 @@ while True:
 
 # add-list
 # import data from txt file
+# print("********** Login System **********")
+# print(1.Signup)
+# print(2.Login)
+# print(3.Exit)
