@@ -15,7 +15,7 @@ def read_from_file() :
     return students
 
 def save_students_info():
-    with open("students_info.txt", "w") as file:
+    with open("students_info.txt", "a") as file:
         for number, info in students.items():
             file.write(f"{number},{info['Adi']},{info['Soyadi']},{info['Tel No']}\n")
 
@@ -41,7 +41,7 @@ def registiration() :
             print("Kaydedilen Öğrenci Bilgileri:")    
             for f,l in students.items():
                 print(f"{f} Numarali Öğrenci: {l}")
-                break
+            break
         elif loop == "E":
             continue
         else:
@@ -52,7 +52,7 @@ def check_info() :
         check = input("Kontrol Edilecek Öğrenci No: ")
         
         if check in students:
-            print(f"{check} Numaralı Öğrenci Bilgileri :")
+            print(f"----------------> {check} Numaralı Öğrenci Bilgileri :")
             for key, value in students[check].items():
                 print(f"{key}: {value}")
             loop = input("Farklı Bir Öğrenci Kontrol Etmek İstiyor musunuz? (E/H): ").upper()
@@ -65,16 +65,25 @@ def check_info() :
             if loop == "E" :
                 continue
             else :
-                break 
+                return "Exit"
 
 while True :
-    action = input("1.Öğrenci Kayıt Sistemi (Student Registiration)\n2.Öğrenci Bilgi Sistemi (Student İnformation System)\nSeçiniz: ").capitalize()
+    action = input("1.Öğrenci Kayıt Sistemi (Student Registiration)\n2.Öğrenci Bilgi Sistemi (Student İnformation System)\n3.Çıkış (Exit)\nSeçiniz: ").capitalize()
+    
     if action in ["1","Kayıt","Registiration","Student registiration"] :
-        registiration()
-        save_students_info()
+        reg_result = registiration()
+        ssinfo_result = save_students_info()
+    
     elif action in ["2","Bilgi", "Görüntüleme","İnfo"]:
-        read_from_file()
-        check_info()
-    else :
-        print("Unvalid Argument! Shutting Down")
+        rff_result = read_from_file()
+        chcinfo_result = check_info()
+        if chcinfo_result == "Exit":
+            exit()
+    
+    elif action in ["3","Çıkış","Exit"]:
+        print("Çıkış Yapılıyor...")
+        exit()
+    
+    else:
+        print("Unvalid Argument! Shutting Down...")
         exit()
