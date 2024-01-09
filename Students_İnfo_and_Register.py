@@ -68,7 +68,6 @@ def check_info() :
                 break 
 
 while True :
-    print
     action = input("1.Öğrenci Kayıt Sistemi (Student Registiration)\n2.Öğrenci Bilgi Sistemi (Student İnformation System)\nSeçiniz: ").capitalize()
     if action in ["1","Kayıt","Registiration","Student registiration"] :
         registiration()
