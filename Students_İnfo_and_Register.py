@@ -75,3 +75,6 @@ while True :
     elif action in ["2","Bilgi", "Görüntüleme","İnfo"]:
         read_from_file()
         check_info()
+    else :
+        print("Unvalid Argument! Shutting Down")
+        exit()
