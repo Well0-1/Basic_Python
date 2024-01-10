@@ -1,15 +1,26 @@
 import random
-import qrcode # Works On Python 3.8.2
+#import qrcode # Works On Python 3.8.2
 
-accounts = {
-    "rayshoesmith70@mail.com": ["Admin", "12345"],
-    "user1@mail.com": ["User1", "password"],
-    "user2@mail.com": ["User2", "manypass"],
-    "user3@mail.com": ["User3", "cantfindany"],
-}
+accounts = {}
 
+def accounts_read():
+    with open("Accounts.txt","r") as file :
+        lines = file.readlines()
+        for line in lines :
+            data = line.strip().split("//")
+            mail = data[0]
+            username = data[1]
+            password = data[2]
+            accounts[mail] = [username,password]
+    return accounts
 
+def accounts_save():
+    with open("Accounts.txt","w") as file :
+        for mail, info in accounts.items() :
+            file.write(f"{mail}//{info[0]}//{info[1]}\n")
+            
 def signup():
+    accounts_read()
     print("<-----------------------------------------Kayıt Programı----------------------------------------->")
 
     mail = input("Mail Adresinizi Giriniz: ")
@@ -19,7 +30,7 @@ def signup():
             if pswchg == "E" :
                 mail = input("Mail Adresinizi Giriniz: ")
             elif pswchg == "H":
-                return 'Change_Pass'
+                return 'Changepass'
             else:
                 return False
     while "@" not in mail:
@@ -51,10 +62,10 @@ def signup():
 
     accounts.update({mail: [new_user, new_pass]})
     print(f"Sayın Kullanıcı {new_user}, Kaydınız Başarıyla Gerçekleşmiştir!\nPrograma Yönlendiriliyorsunuz...")
-    return True
-
-
+    return "Succesful Signup"
+    
 def login():
+    accounts_read()
     trys = 0
     wrong_pass = 0
     
@@ -89,28 +100,36 @@ def login():
             print("Çok Sayıda Yanlış Deneme Yapıldı Program Kapatılıyor!")
             exit()
 
-
 def changepass():
+    accounts_read()
     print("<-----------Şifremi Unuttum----------->")
 
     mail = input("Mail Adresiniz: ") 
     if mail in accounts:
         username = accounts[mail][0]
         vcode = random.randint(100000, 999999)
-        img = qrcode.make(vcode)              # Qr
-        img.show()                            # Qr
+        print(vcode)
+        #img = qrcode.make(vcode)              # Qr if you want but Works On Python 3.8.2
+        #img.show()                            # Qr if you want but Works On Python 3.8.2
         
         trys = 0
+        v_pass = 0
         while trys < 3 :
             verify = int(input(f"{mail} Adresine Gelen 6 Haneli Doğrulama Kodunu Giriniz: "))
             if verify == vcode:
                 changed_pass = input("Yeni Şifre: ")
                 v_changed_pass = input("Yeni Şifreyi Doğrulayın: ")
                 while changed_pass != v_changed_pass:
+                    print("Şifreler Eşleşmiyor, Lütfen Doğru Girdiğinize Emin Olunuz!")
                     changed_pass = input("Yeni Şifre: ")
                     v_changed_pass = input("Yeni Şifreyi Doğrulayın: ")
-                accounts.update({mail:[username, changed_pass]})
-                print("Şifreniz Başarıyla Değiştirildi!\n")
+                    v_pass += 1
+                    if v_pass == 3:
+                        print("Çok Sayıda Yanlış Deneme Yapıldı Program Kapatılıyor!")
+                        exit()
+
+                accounts[mail][1] = changed_pass
+                print(f"Sayın Kullanıcı {username}, Şifreniz Başarıyla Değiştirildi!\n")
                 break
             else :
                 print("\nGirilen Kod Yanlış!\n")
@@ -123,39 +142,57 @@ def changepass():
         print("Bu Mail Adresine Kayıtlı Bir Kullanıcı Bulunmamaktadır!")
         ask_signup = input("Kayıt Olmak İster misiniz? (E/H): ").upper()
         if ask_signup == "E":
-            return "Signup"
+            return "Noaccount"
         else:
             return "Incorrect"
 
-
 while True:
-    login_result = login()
-    if login_result == True:
-        exit()
+    
+    print("<----------- Login System ----------->")
+
+    choice = input("1.Kayıt Ol (Signup)\n2.Giriş Yap (Login)\n3.Şifremi Unuttum (Forgot Password)\n4.Çıkış Yap (Exit)\nSeçiniz: ").capitalize()
+
+    if choice in ["1","Kayıt ol","Signup"] :
+        signup_result = signup()
+        accounts_save()
+    
+    elif choice in ["2","Giriş yap","Login"] :
+        print(accounts)
+        login_result = login()
+        if login_result == True:
+            exit()
         
-    elif login_result == False:
-        print("Invalid Argument! Shutting Down...")
-        exit()
+        elif login_result == False:
+            print("Invalid Argument! Shutting Down...")
+            exit()
         
-    elif login_result == "Incorrect":
-        chgpass_result = changepass()
-        if chgpass_result == "Signup":
-            signup()
+        elif login_result == "Incorrect":
+            chgpass_result = changepass()
+            if chgpass_result == "Noaccount":
+                signup_result = signup()
+                
+            else :
+                continue
+               
+        elif login_result == "Signup":
+            signup_result = signup()
+            if signup_result == "Succesful Signup":
+                accounts_save()
+            elif signup_result == "Changepass":
+                changepass()
+            elif signup_result == False :
+                exit()
         else :
             continue
-               
-    elif login_result == "Signup":
-        signup_result = signup()
-        if signup_result == "Change_Pass":
-            changepass()
-        elif signup_result == False :
-            exit()
-    else :
-        continue
-
-# add-list
-# import data from txt file
-# print("********** Login System **********")
-# print(1.Signup)
-# print(2.Login)
-# print(3.Exit)
+    
+    elif choice in ["3","Şifremi unuttum","Forgot password"] : 
+        chgpass_result = changepass()
+        accounts_save()
+    
+    elif choice in ["4","Çıkış yap","Exit"] :
+        print("Çıkış Yapılıyor...")
+        exit()
+   
+    else:
+        print("Invalid Argument! Shutting Down...")
+        exit()
