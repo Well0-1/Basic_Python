@@ -9,7 +9,7 @@ def accounts_read():
     with open("Accounts.txt", "r") as file:
         lines = file.readlines()
         for line in lines:
-            data = line.strip().split("//")
+            data = line.strip().split("0$0")
             mail = data[0]
             username = data[1]
             password = data[2]
@@ -20,7 +20,7 @@ def accounts_read():
 def accounts_save():
     with open("Accounts.txt", "w") as file:
         for mail, info in accounts.items():
-            file.write(f"{mail}//{info[0]}//{info[1]}\n")
+            file.write(f"{mail}0$0{info[0]}0$0{info[1]}\n")
 
 
 def signup():
@@ -225,5 +225,3 @@ while True:
     else:
         print("Invalid Argument! Shutting Down...")
         exit()
-
-# I didnt test fully so it might have problems
