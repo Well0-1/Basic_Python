@@ -1,18 +1,35 @@
+import os 
 import random
-# import qrcode # Works On Python 3.8.2
+# import qrcode                              # Works On Python 3.8.2
+from cryptography.fernet import Fernet as F  # Works On Python 3.8.2 
+import maskpass                              # Works On Python 3.8.2
 
+VARIANT_FILE = "key.key"
 
-accounts = {}
+def generate_key():
+    key = F.generate_key()
+    with open(VARIANT_FILE,"wb") as key_file :
+        key_file.write(key)     
+        
+def load_key():
+    return open(VARIANT_FILE, "rb").read()            
 
+if not os.path.exists(VARIANT_FILE):
+    generate_key()
+    
+key = load_key()
 
+encryptor = F(key)
+
+accounts = {} 
 def accounts_read():
     with open("Accounts.txt", "r") as file:
         lines = file.readlines()
         for line in lines:
-            data = line.strip().split("0$0")
-            mail = data[0]
-            username = data[1]
-            password = data[2]
+            data = line.strip().split("|")
+            mail = encryptor.decrypt(data[0][2:-1]).decode()
+            username = encryptor.decrypt(data[1][2:-1]).decode()
+            password = encryptor.decrypt(data[2][2:-1]).decode()
             accounts[mail] = [username, password]
     return accounts
 
@@ -20,7 +37,11 @@ def accounts_read():
 def accounts_save():
     with open("Accounts.txt", "w") as file:
         for mail, info in accounts.items():
-            file.write(f"{mail}0$0{info[0]}0$0{info[1]}\n")
+            encrypt_mail = encryptor.encrypt(mail.encode())
+            encrypt_info0 = encryptor.encrypt(info[0].encode())
+            encrypt_info1 = encryptor.encrypt(info[1].encode())
+            file.write(f"{encrypt_mail}|{encrypt_info0}|{encrypt_info1}\n")
+
 
 
 def signup():
@@ -47,16 +68,16 @@ def signup():
 
     trys = 0
 
-    new_pass = input("Şifre: ")
+    new_pass =  maskpass.askpass("Şifre: ")
     while len(new_pass) < 8 or len(new_pass) > 16:
         print("Oluşturacağınız Şifre En Az 8 En Fazla 16 Karakter Olmalıdır!")
-        new_pass = input("Şifre: ")
+        new_pass = maskpass.askpass("Şifre: ")
 
-    v_new_pass = input("Şifrenizi Doğrulayın: ")
+    v_new_pass =  maskpass.askpass("Şifrenizi Doğrulayın: ")
     while new_pass != v_new_pass:
         print("Şifreler Eşleşmiyor, Lütfen Doğru Girdiğinize Emin Olunuz!")
-        new_pass = input("Şifre: ")
-        v_new_pass = input("Şifrenizi Doğrulayın: ")
+        new_pass = maskpass.askpass("Şifre: ")
+        v_new_pass = maskpass.askpass("Şifrenizi Doğrulayın: ")
         trys += 1
         if trys == 3:
             print("Çok Sayıda Geçersiz İşlem Yapıldı Program Kapatılıyor...")
@@ -74,7 +95,7 @@ def login():
     print("<----------Login---------->")
     while True:
         username = input("Kullanıcı Adı : ")
-        password = input("Şifre : ")
+        password = maskpass.askpass("Şifre: ")
 
         for v in accounts.values():
             if username == v[0] and password == v[1]:
@@ -121,12 +142,12 @@ def changepass():
         while trys < 3:
             verify = int(input(f"{mail} Adresine Gelen 6 Haneli Doğrulama Kodunu Giriniz: "))
             if verify == vcode:
-                changed_pass = input("Yeni Şifre: ")
-                v_changed_pass = input("Yeni Şifreyi Doğrulayın: ")
+                changed_pass = maskpass.askpass("Yeni Şifre: ")
+                v_changed_pass = maskpass.askpass("Yeni Şifreyi Doğrulayın: ")
                 while changed_pass != v_changed_pass:
                     print("Şifreler Eşleşmiyor, Lütfen Doğru Girdiğinize Emin Olunuz!")
-                    changed_pass = input("Yeni Şifre: ")
-                    v_changed_pass = input("Yeni Şifreyi Doğrulayın: ")
+                    changed_pass = maskpass.askpass("Yeni Şifre: ")
+                    v_changed_pass = maskpass.askpass("Yeni Şifreyi Doğrulayın: ")
                     v_pass += 1
                     if v_pass == 3:
                         print("Çok Sayıda Yanlış Deneme Yapıldı Program Kapatılıyor!")
@@ -149,6 +170,7 @@ def changepass():
             return "Noaccount"
         else:
             return "Again"
+
 
 while True:
     print("\n<----------- Login System ----------->")
@@ -175,6 +197,8 @@ while True:
                 if login_result == "Incorrect":
                     changepass()
                     accounts_save()
+                elif login_result == True:
+                    exit()
                 trys += 1
                 if trys == 4 :
                     print("\nToo many incorrect attemps! Shutting Down...")
