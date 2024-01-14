@@ -4,24 +4,29 @@ import random
 from cryptography.fernet import Fernet as F  # Works On Python 3.8.2 
 import maskpass                              # Works On Python 3.8.2
 
-VARIANT_FILE = "key.key"
+
+
+if not os.path.exists("Accounts.txt"):
+    open("Accounts.txt","x")
 
 def generate_key():
     key = F.generate_key()
-    with open(VARIANT_FILE,"wb") as key_file :
+    with open("key.key","wb") as key_file :
         key_file.write(key)     
-        
-def load_key():
-    return open(VARIANT_FILE, "rb").read()            
 
-if not os.path.exists(VARIANT_FILE):
+if not os.path.exists("key.key"):
     generate_key()
+
+def save_key():
+    return open("key.key", "rb").read()            
     
-key = load_key()
+key = save_key()
 
 encryptor = F(key)
 
 accounts = {} 
+
+
 def accounts_read():
     with open("Accounts.txt", "r") as file:
         lines = file.readlines()
@@ -41,7 +46,6 @@ def accounts_save():
             encrypt_info0 = encryptor.encrypt(info[0].encode())
             encrypt_info1 = encryptor.encrypt(info[1].encode())
             file.write(f"{encrypt_mail}|{encrypt_info0}|{encrypt_info1}\n")
-
 
 
 def signup():
