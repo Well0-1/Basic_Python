@@ -5,7 +5,6 @@ from cryptography.fernet import Fernet as F  # Works On Python 3.8.2
 import maskpass                              # Works On Python 3.8.2
 
 
-
 if not os.path.exists("Accounts.txt"):
     open("Accounts.txt","x")
 
